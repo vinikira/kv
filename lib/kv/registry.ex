@@ -45,10 +45,10 @@ defmodule KV.Registry do
     {:ok, {names, refs}}
   end
 
-  def handle_cast({:create, name}, {names, refs}) do
+  def handle_call({:create, name}, _from, {names, refs}) do
     case lookup(names, name) do
-      {:ok, _pid} ->
-        {:noreply, {names, refs}}
+      {:ok, pid} ->
+        {:reply, pid, {names, refs}}
 
       :error ->
         {:ok, pid} = DynamicSupervisor.start_child(KV.BucketSupervisor, KV.Bucket)
