@@ -27,7 +27,7 @@ defmodule KV.Registry do
   Ensures there is a bucket associated with the given `name` in `server`
   """
   def create(server, name) do
-    GenServer.cast(server, {:create, name})
+    GenServer.call(server, {:create, name})
   end
 
   @doc """
@@ -55,7 +55,7 @@ defmodule KV.Registry do
         ref = Process.monitor(pid)
         refs = Map.put(refs, ref, name)
         :ets.insert(names, {name, pid})
-        {:noreply, {names, refs}}
+        {:reply, pid, {names, refs}}
     end
   end
 
